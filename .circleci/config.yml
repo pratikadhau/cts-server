@@ -39,6 +39,7 @@ jobs:
 
       # run tests!
       - run: gradle build
+      - run: cp build/libs/*.jar cts-server-latest.jar
       #install docker
       - setup_remote_docker
 
