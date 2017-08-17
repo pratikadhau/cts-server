@@ -1,5 +1,4 @@
-# Java Gradle CircleCI 2.0 configuration file
-#
+# Java Gradle CircleCI 2.0 configuration filebui#
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
 version: 2
@@ -39,7 +38,24 @@ jobs:
           key: v1-dependencies-{{ checksum "build.gradle" }}
 
       # run tests!
-      - run: gradle test
+      - run: gradle build
+      #install docker
+      - run:
+            name: Install Docker client
+            command: |
+              set -x
+              VER="17.03.0-ce"
+              curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+              tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+              mv /tmp/docker/* /usr/bin
+
+      # build and push Docker image
+      - run: |
+          TAG=v1
+          BUILD_NAME=pratikadhau/cts-server
+          docker build -t $BUILD_NAME:$TAG .      # (3)
+          docker login -u pratikadhau -p Epitom@11         # (4)
+          docker push $BUILD_NAME:$TAG
 
 
 
